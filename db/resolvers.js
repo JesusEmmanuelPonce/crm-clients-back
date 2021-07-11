@@ -1,30 +1,34 @@
-const cursos = [
-    {
-        titulo: 'JavaScript Moderno Guía Definitiva Construye +10 Proyectos',
-        tecnologia: 'JavaScript ES6',
-    },
-    {
-        titulo: 'React – La Guía Completa: Hooks Context Redux MERN +15 Apps',
-        tecnologia: 'React',
-    },
-    {
-        titulo: 'Node.js – Bootcamp Desarrollo Web inc. MVC y REST API’s',
-        tecnologia: 'Node.js'
-    }, 
-    {
-        titulo: 'ReactJS Avanzado – FullStack React GraphQL y Apollo',
-        tecnologia: 'React'
-    }
-];
-
+const User = require("../models/User");
 
 const resolvers = {
     Query: {
-        obtenerCursos: (_, {input}, ctx) => {
-            const res = cursos.filter(c => c.tecnologia === input.tecnologia)
-            return res
-        },
-        obtenerTecnologia: () => cursos
+        obtenerCurso: () => "algo"
+    },
+
+    Mutation: {
+        addUser: async(_, { input }) => {
+
+            const { email, password } = input;
+
+            const isUser = await User.findOne({ email });
+
+            if(isUser){
+                throw new Error("El usuario ya existe");
+            }
+
+            try {
+
+                const user = new User(input);
+                user.save();
+                return user;
+
+            } catch (error) {
+                console.log("[mutation, addUser]", error);
+            }
+
+            console.log(input);
+            return "Creando..."
+        }
     }
 }
 
